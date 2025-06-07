@@ -43,7 +43,7 @@ class Drd_Custom_Plugin {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Drd_Custom_Plugin_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Drd_Custom_Plugin_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected Drd_Custom_Plugin_Loader $loader;
 
@@ -52,7 +52,7 @@ class Drd_Custom_Plugin {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var      string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected string $plugin_name;
 
@@ -61,9 +61,14 @@ class Drd_Custom_Plugin {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected string $version;
+
+	/**
+	 * The rest api
+	 */
+	protected string $rest_api_namespace;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -80,6 +85,11 @@ class Drd_Custom_Plugin {
 		} else {
 			$this->version = '1.0.0';
 		}
+
+		if ( defined( 'DRD_CUSTOM_PLUGIN_REST_API_NAMESPACE' ) ) {
+			$this->rest_api_namespace = DRD_CUSTOM_PLUGIN_REST_API_NAMESPACE;
+		}
+
 		$this->plugin_name = 'drd-custom-plugin';
 
 		$this->load_dependencies();
@@ -95,7 +105,7 @@ class Drd_Custom_Plugin {
 	 * @return Drd_Custom_Plugin
 	 */
 	public static function getInstance(): Drd_Custom_Plugin {
-		if (self::$instance === null) {
+		if ( self::$instance === null ) {
 			self::$instance = new self();
 		}
 
@@ -178,6 +188,7 @@ class Drd_Custom_Plugin {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu_initializer' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'init_custom_rest_api' );
 	}
 
 	/**
@@ -209,28 +220,37 @@ class Drd_Custom_Plugin {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_plugin_name(): string {
 		return $this->plugin_name;
 	}
 
 	/**
+	 * It returns the api namespace.
+	 *
+	 * @return string
+	 */
+	public function get_api_namespace(): string {
+		return $this->rest_api_namespace;
+	}
+
+	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    Drd_Custom_Plugin_Loader    Orchestrates the hooks of the plugin.
+	 * @since     1.0.0
 	 */
-	public function get_loader(): Drd_Custom_Plugin_Loader  {
+	public function get_loader(): Drd_Custom_Plugin_Loader {
 		return $this->loader;
 	}
 
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_version(): string {
 		return $this->version;

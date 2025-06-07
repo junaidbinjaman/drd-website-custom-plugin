@@ -10,6 +10,8 @@
  * @subpackage Drd_Custom_Plugin/admin
  */
 
+use includes\rest_controllers\Return_User_Role;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -166,4 +168,10 @@ class Drd_Custom_Plugin_Admin {
 		$formattedEndDate = $endDate->format('Y-m-d');
 	}
 
+	public function init_custom_rest_api(): void {
+		require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Return_User_Role.php';
+
+		$get_user_roles = new Return_User_Role();
+		$get_user_roles->register_endpoint();
+	}
 }

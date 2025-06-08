@@ -47,6 +47,5 @@ export const salseStartDateApiFetch = async (data: {
         throw new Error('Something went wrong');
     }
 
-    console.log(window.drdData.rootUrl, window.drdData.nonce)
     return await response.json();
 }

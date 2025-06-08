@@ -25,9 +25,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CalendarPopHover from "@/components/CalendarPopHover.tsx";
 import CreateReportPopup from "@/components/salseReportByUserRole/createReportPopup.tsx";
+import UserRolesDropdown from "@/components/salseReportByUserRole/userRolesDropdown.tsx";
 
 export const description = "An interactive area chart"
 
@@ -142,8 +143,12 @@ const chartConfig = {
 export function ReportChart() {
     const [timeRange, setTimeRange] = React.useState("30d")
     const [selectedUserRole, setSelectedUserRole] = useState('customer');
+    const [referenceDate, setReferenceDate] = useState<Date | undefined>();
 
-    console.log(selectedUserRole);
+    useEffect(() => {
+        console.log(selectedUserRole);
+        console.log(referenceDate?.toLocaleDateString('en-CA'));
+    }, [referenceDate])
 
     const filteredData = chartData.filter((item) => {
         const date = new Date(item.date)
@@ -162,25 +167,10 @@ export function ReportChart() {
     return (
         <Card className="pt-0">
             <CardHeader className="flex items-justified-left gap-2 space-y-0 border-b py-5 sm:flex-row">
-                <Select value={selectedUserRole} onValueChange={setSelectedUserRole}>
-                    <SelectTrigger
-                        className="w-[160px] rounded-lg sm:flex"
-                        aria-label="Select a value"
-                    >
-                        <SelectValue placeholder="Select user role" />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl">
-                        <SelectItem value="customer" className="rounded-lg">
-                            Customer
-                        </SelectItem>
-                        <SelectItem value="wholesale_customer" className="rounded-lg">
-                            Wholesale customer
-                        </SelectItem>
-                        <SelectItem value="subscriber" className="rounded-lg">
-                            Subscriber
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
+                <UserRolesDropdown
+                    selectedUserRole={selectedUserRole}
+                    setSelectedUserRole={setSelectedUserRole}
+                />
                 <Select value={timeRange} onValueChange={setTimeRange}>
                     <SelectTrigger
                         className="w-[160px] rounded-lg sm:flex"
@@ -200,7 +190,10 @@ export function ReportChart() {
                         </SelectItem>
                     </SelectContent>
                 </Select>
-                <CalendarPopHover />
+                <CalendarPopHover
+                    referenceDate={referenceDate}
+                    setReferenceDate={setReferenceDate}
+                />
                 <CreateReportPopup />
             </CardHeader>
             <CardContent>

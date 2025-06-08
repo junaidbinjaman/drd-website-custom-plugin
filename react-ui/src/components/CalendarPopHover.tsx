@@ -4,35 +4,23 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import {Calendar} from "@/components/ui/calendar"
-import {useState} from "react";
-// import {useSalseStartDate} from "@/hooks/useSalseStartDate.ts";
 
-function CalendarPopHover() {
-    const [selected, setSelected] = useState<Date>();
-    // const {mutate} = useSalseStartDate();
+type CalendarPopHoverProps = {
+    referenceDate: Date | undefined;
+    setReferenceDate: (value: Date | undefined) => void
+}
 
-    // useEffect(() => {
-    //
-    //     const payload = {
-    //         date: selected
-    //     }
-    //
-    //     mutate(payload);
-    //
-    // }, [selected])
-
-    console.log(selected?.toLocaleDateString())
-
+function CalendarPopHover({referenceDate, setReferenceDate}: CalendarPopHoverProps) {
     return (
         <Popover>
             <PopoverTrigger className='rounded-lg py-2 w-[160px] flex justify-left pl-3  border cursor-pointer'>
-                {selected ? selected.toLocaleDateString() : 'Select Date'}
+                {referenceDate ? referenceDate.toLocaleDateString() : 'Select Date'}
             </PopoverTrigger>
             <PopoverContent>
                 <Calendar
                     mode="single"
-                    selected={selected}
-                    onSelect={setSelected}
+                    selected={referenceDate}
+                    onSelect={setReferenceDate}
                     className="rounded-lg border"
                 />
             </PopoverContent>

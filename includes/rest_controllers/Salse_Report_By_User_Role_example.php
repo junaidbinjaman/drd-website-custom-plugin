@@ -37,7 +37,7 @@ class Salse_Report_By_User_RoleExample extends WP_REST_Controller {
 	public function __construct() {
 		$this->version   = 'v1';
 		$this->namespace = 'drdcustomplugin/' . $this->version;
-		$this->rest_base = 'salse-report-by-user-role';
+		$this->rest_base = 'salse-report-by-user-rol';
 	}
 
 	/**

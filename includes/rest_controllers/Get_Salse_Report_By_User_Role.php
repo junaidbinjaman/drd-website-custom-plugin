@@ -52,7 +52,7 @@ class Get_Salse_Report_By_User_Role {
 		) );
 	}
 
-	protected function get_ordes_of_the_day( \DateTime $date ): array {
+	protected function get_ordes_of_the_day( \DateTime $date, string $requested_user_role ): array {
 		$orders = wc_get_orders( array(
 			'date_created' => $date->format( 'Y-m-d' )
 		) );
@@ -61,8 +61,13 @@ class Get_Salse_Report_By_User_Role {
 		$total_shipping = 0;
 
 		foreach ( $orders as $order ) {
-			$net_salse      = $net_salse + $order->get_subtotal();
-			$total_shipping = $total_shipping + $order->get_shipping_total();
+			$user      = get_userdata( $order->get_user_id() );
+			$user_role = $user->roles;
+
+			if ( $requested_user_role == $user_role[0] ) {
+				$net_salse      = $net_salse + $order->get_subtotal();
+				$total_shipping = $total_shipping + $order->get_shipping_total();
+			}
 		}
 
 		return array(
@@ -95,7 +100,7 @@ class Get_Salse_Report_By_User_Role {
 		foreach ( $date_period as $date ) {
 			$order_data_by_day[] = array(
 				'date'       => $date->format( 'Y-m-d' ),
-				'order_data' => $this->get_ordes_of_the_day( $date ),
+				'order_data' => $this->get_ordes_of_the_day( $date, $user_role ),
 			);
 		}
 

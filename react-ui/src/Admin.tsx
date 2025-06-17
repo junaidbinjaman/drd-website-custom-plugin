@@ -3,7 +3,7 @@ import SalseReportByUserRole from "@/components/salseReportByUserRole";
 function Admin() {
 
     return (
-        <div className='w-3/4 mt-10'>
+        <div>
             <SalseReportByUserRole />
         </div>
     )

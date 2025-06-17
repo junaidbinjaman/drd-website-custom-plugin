@@ -1,9 +1,10 @@
 import {ReportChart} from "@/components/salseReportByUserRole/reportChart.tsx";
 
 const Index = () => {
-    return (<>
-    <ReportChart />
-    </>)
+
+    return (
+        <ReportChart/>
+    )
 }
 
-export default  Index;
+export default Index;

@@ -75,6 +75,17 @@ class Drd_Custom_Plugin_Public {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/drd-custom-plugin-public.css', array(), $this->version, 'all' );
 
+		/**
+		 * Enqueue reactjs styles
+		 */
+		wp_enqueue_style(
+			'react-js-styles',
+			plugins_url('/drd-custom-plugin', dirname(__DIR__, 1)) . '/includes/react/index.css',
+			[],
+			'1.0.0',
+			'all',
+		);
+
 	}
 
 	/**
@@ -97,6 +108,19 @@ class Drd_Custom_Plugin_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/drd-custom-plugin-public.js', array( 'jquery' ), $this->version, false );
+
+		/**
+		 * Enqueue react js scripts
+		 */
+		wp_enqueue_script(
+			'react-js-scripts',
+			plugins_url('/drd-custom-plugin', dirname(__DIR__, 1)) . '/includes/react/index.js',
+			[],
+			'1.0.0',
+			true
+		);
+
+		echo '<div id="drd-user-interface"></div>';
 
 	}
 

@@ -35,13 +35,13 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'DRD_CUSTOM_PLUGIN_VERSION', '1.0.0' );
+CONST DRD_CUSTOM_PLUGIN_VERSION = '1.0.0';
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-drd-custom-plugin-activator.php
  */
-function activate_drd_custom_plugin() {
+function activate_drd_custom_plugin():void {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-drd-custom-plugin-activator.php';
 	Drd_Custom_Plugin_Activator::activate();
 }
@@ -50,7 +50,7 @@ function activate_drd_custom_plugin() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-drd-custom-plugin-deactivator.php
  */
-function deactivate_drd_custom_plugin() {
+function deactivate_drd_custom_plugin():void {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-drd-custom-plugin-deactivator.php';
 	Drd_Custom_Plugin_Deactivator::deactivate();
 }
@@ -73,7 +73,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-drd-custom-plugin.php';
  *
  * @since    1.0.0
  */
-function run_drd_custom_plugin() {
+function run_drd_custom_plugin():void {
 
 	$plugin = new Drd_Custom_Plugin();
 	$plugin->run();

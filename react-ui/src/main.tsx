@@ -1,14 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+import Admin from "./Admin.tsx";
 
-const userRoot = document.getElementById('drd-user-interface');
+const adminRoot = document.getElementById('drd-admin-interface');
 
-if (userRoot) {
-    createRoot(userRoot).render(
+if (adminRoot) {
+    createRoot(adminRoot).render(
         <StrictMode>
-            <App />
+            <Admin />
         </StrictMode>
     );
 }

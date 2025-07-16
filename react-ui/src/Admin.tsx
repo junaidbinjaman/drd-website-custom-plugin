@@ -1,7 +1,6 @@
 "use client"
 
 import { Bar, BarChart, XAxis } from "recharts"
-
 import {
     Card,
     CardContent,
@@ -14,35 +13,54 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
-
 import type {ChartConfig} from '@/components/ui/chart.tsx'
+import {useEffect, useState} from "react";
 
 export const description = "A stacked bar chart with a legend"
 export const iframeHeight = "600px"
 export const containerClassName =
     "[&>div]:w-full [&>div]:max-w-md flex items-center justify-center min-h-svh"
 
-const chartData = [
-    { date: "2024-07-15", running: 450, swimming: 300 },
-    { date: "2024-07-16", running: 380, swimming: 420 },
-    { date: "2024-07-17", running: 520, swimming: 120 },
-    { date: "2024-07-18", running: 140, swimming: 550 },
-    { date: "2024-07-19", running: 600, swimming: 350 },
-    { date: "2024-07-20", running: 480, swimming: 400 },
-]
-
-const chartConfig = {
-    running: {
-        label: "Running",
-        color: "var(--chart-1)",
-    },
-    swimming: {
-        label: "Swimming",
-        color: "var(--chart-2)",
-    },
-} satisfies ChartConfig
-
 function Admin() {
+    const [orders, setOrders] = useState<Promise<void>|{total: string,  shipping_total: string, date_created: string}[]>([]);
+    useEffect(() => {
+        const getProducts = async () => {
+            const res = await fetch(`${window.drdData.rootUrl}wc/v3/orders`, {
+                headers: {
+                    'X-WP-Nonce': window.drdData.nonce,
+                },
+            });
+
+            const data = await res.json();
+            setOrders(data);
+        };
+
+        getProducts();
+    }, []);
+
+    const chartData = [
+
+    ]
+
+    for (let i = 0; i < orders.length; i++) {
+        let element = orders[i];
+        console.log(element)
+        let object = { date: element.date_created, running: element.total, swimming: element.shipping_total }
+
+        chartData.push(object);
+    }
+
+    const chartConfig = {
+        running: {
+            label: "Running",
+            color: "red",
+        },
+        swimming: {
+            label: "Swimming",
+            color: "var(--chart-2)",
+        },
+    } satisfies ChartConfig
+
     return (
         <div className='w-2/4 mt-10'>
             <Card>

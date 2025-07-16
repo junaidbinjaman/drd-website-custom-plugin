@@ -37,7 +37,7 @@ class Drd_Custom_Plugin {
 	 * @access   protected
 	 * @var      Drd_Custom_Plugin_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
-	protected $loader;
+	protected Drd_Custom_Plugin_Loader $loader;
 
 	/**
 	 * The unique identifier of this plugin.
@@ -46,7 +46,7 @@ class Drd_Custom_Plugin {
 	 * @access   protected
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
-	protected $plugin_name;
+	protected string $plugin_name;
 
 	/**
 	 * The current version of the plugin.
@@ -55,7 +55,7 @@ class Drd_Custom_Plugin {
 	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
-	protected $version;
+	protected string $version;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -97,7 +97,7 @@ class Drd_Custom_Plugin {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies() {
+	private function load_dependencies(): void {
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -135,7 +135,7 @@ class Drd_Custom_Plugin {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function set_locale() {
+	private function set_locale(): void {
 
 		$plugin_i18n = new Drd_Custom_Plugin_i18n();
 
@@ -144,29 +144,29 @@ class Drd_Custom_Plugin {
 	}
 
 	/**
-	 * Register all of the hooks related to the admin area functionality
+	 * Register all the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
+	private function define_admin_hooks(): void {
 
 		$plugin_admin = new Drd_Custom_Plugin_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu_initializer' );
 	}
 
 	/**
-	 * Register all of the hooks related to the public-facing functionality
+	 * Register all the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
+	private function define_public_hooks(): void {
 
 		$plugin_public = new Drd_Custom_Plugin_Public( $this->get_plugin_name(), $this->get_version() );
 
@@ -176,11 +176,11 @@ class Drd_Custom_Plugin {
 	}
 
 	/**
-	 * Run the loader to execute all of the hooks with WordPress.
+	 * Run the loader to execute all the hooks with WordPress.
 	 *
 	 * @since    1.0.0
 	 */
-	public function run() {
+	public function run(): void {
 		$this->loader->run();
 	}
 
@@ -191,7 +191,7 @@ class Drd_Custom_Plugin {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_plugin_name() {
+	public function get_plugin_name(): string {
 		return $this->plugin_name;
 	}
 
@@ -201,7 +201,7 @@ class Drd_Custom_Plugin {
 	 * @since     1.0.0
 	 * @return    Drd_Custom_Plugin_Loader    Orchestrates the hooks of the plugin.
 	 */
-	public function get_loader() {
+	public function get_loader(): Drd_Custom_Plugin_Loader  {
 		return $this->loader;
 	}
 
@@ -211,7 +211,7 @@ class Drd_Custom_Plugin {
 	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
 	 */
-	public function get_version() {
+	public function get_version(): string {
 		return $this->version;
 	}
 

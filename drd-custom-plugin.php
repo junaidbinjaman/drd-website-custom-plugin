@@ -17,12 +17,19 @@
  * Plugin URI:        https://allnextver.com
  * Description:       This is a custom plugin developed for drd website. The purpose behind this plugin development is to develop custom features and functionalities for drd website.
  * Version:           1.0.0
+ *
  * Author:            Junaid Bin Jaman
  * Author URI:        https://junaidbinjaman.com/
+ *
+ *  Developer:         All Next Ver
+ *  Developer URI:     https://allnextver.com
+ *
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ *
  * Text Domain:       drd-custom-plugin
  * Domain Path:       /languages
+ * Requires Plugins:  woocommerce
  */
 
 // If this file is called directly, abort.
@@ -35,13 +42,13 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-CONST DRD_CUSTOM_PLUGIN_VERSION = '1.0.0';
+const DRD_CUSTOM_PLUGIN_VERSION = '1.0.0';
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-drd-custom-plugin-activator.php
  */
-function activate_drd_custom_plugin():void {
+function activate_drd_custom_plugin(): void {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-drd-custom-plugin-activator.php';
 	Drd_Custom_Plugin_Activator::activate();
 }
@@ -50,7 +57,7 @@ function activate_drd_custom_plugin():void {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-drd-custom-plugin-deactivator.php
  */
-function deactivate_drd_custom_plugin():void {
+function deactivate_drd_custom_plugin(): void {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-drd-custom-plugin-deactivator.php';
 	Drd_Custom_Plugin_Deactivator::deactivate();
 }
@@ -73,11 +80,30 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-drd-custom-plugin.php';
  *
  * @since    1.0.0
  */
-function run_drd_custom_plugin():void {
+function run_drd_custom_plugin(): void {
 
-	$plugin = new Drd_Custom_Plugin();
-	$plugin->run();
+	if ( ! class_exists( 'WooCommerce' ) ) {
+		echo '<div class="error">I require WooCommerce. So get back to me after having woocommerce.</div>';
+	}
 
+	Drd_Custom_Plugin::getInstance()->run();
 }
 
-run_drd_custom_plugin();
+add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
+
+add_action( 'init', function () {
+	if ( ! is_admin() ) {
+		$start_date = new DateTime('2025-07-01');
+
+		echo '<pre>';
+		var_dump($start_date);
+		print_r( count(wc_get_orders([
+			'date_created' => '2025-07-01...2025-07-15',
+			'limit'        => -1,
+		])) );
+		echo '</pre>';
+		wp_die();
+
+	}
+} );
+

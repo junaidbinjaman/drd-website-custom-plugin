@@ -30,6 +30,14 @@
 class Drd_Custom_Plugin {
 
 	/**
+	 * Singleton pattern instance
+	 * It holds the instance of the main plugin file.
+	 *
+	 * @var Drd_Custom_Plugin|null
+	 */
+	private static ?Drd_Custom_Plugin $instance = null;
+
+	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
@@ -79,6 +87,19 @@ class Drd_Custom_Plugin {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+	}
+
+	/**
+	 * Singleton instance folder function
+	 *
+	 * @return Drd_Custom_Plugin
+	 */
+	public static function getInstance(): Drd_Custom_Plugin {
+		if (self::$instance === null) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
 	}
 
 	/**

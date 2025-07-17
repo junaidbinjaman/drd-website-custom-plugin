@@ -56,6 +56,14 @@ class Drd_Custom_Plugin_Admin {
 	}
 
 	/**
+	 * Get the action screen on admin panel
+	 * @return string|WP_Screen|null
+	 */
+	private function screen(): string|WP_Screen|null {
+		return get_current_screen();
+	}
+
+	/**
 	 * Register the stylesheets for the admin area.
 	 *
 	 * @since    1.0.0
@@ -79,14 +87,15 @@ class Drd_Custom_Plugin_Admin {
 		/**
 		 * Enqueue react style
 		 */
-		wp_enqueue_style(
-			'drd-admin-react-ui-styles',
-			plugin_dir_url( __DIR__ ) . 'includes/react/index.css',
-			array(),
-			filemtime(plugin_dir_path( __DIR__ ) . 'includes/react/index.css'),
-			'all'
-		);
-
+		if ( $this->screen() && $this->screen()->id === 'toplevel_page_sales-report-by-user-role' ) {
+			wp_enqueue_style(
+				'drd-admin-react-ui-styles',
+				plugin_dir_url( __DIR__ ) . 'includes/react/index.css',
+				array(),
+				filemtime( plugin_dir_path( __DIR__ ) . 'includes/react/index.css' ),
+				'all'
+			);
+		}
 	}
 
 	/**
@@ -110,12 +119,10 @@ class Drd_Custom_Plugin_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/drd-custom-plugin-admin.js', array( 'jquery' ), $this->version, false );
 
-		$current_screen = get_current_screen();
-
-		if ($current_screen && $current_screen->id === 'toplevel_page_sales-report-by-user-role') {
-			/**
-			 * Enqueue the react ui scripts
-			 */
+		/**
+		 * Enqueue the react ui scripts
+		 */
+		if ( $this->screen() && $this->screen()->id === 'toplevel_page_sales-report-by-user-role' ) {
 			wp_enqueue_script(
 				'drd-admin-react-ui-screen',
 				plugin_dir_url( __DIR__ ) . 'includes/react/index.js',
@@ -124,14 +131,18 @@ class Drd_Custom_Plugin_Admin {
 				true
 			);
 
-			wp_localize_script('drd-admin-react-ui-screen', 'drdData', [
-				'rootUrl' => esc_url_raw(rest_url()),
-				'nonce'   => wp_create_nonce('wp_rest'),
-			]);
+			wp_localize_script( 'drd-admin-react-ui-screen', 'drdData', [
+				'rootUrl' => esc_url_raw( rest_url() ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
+			] );
 		}
-
 	}
 
+	/**
+	 * Admin menu initializer function
+	 *
+	 * @return void
+	 */
 	public function admin_menu_initializer(): void {
 		add_menu_page(
 			__( 'Sales report by user role' ),

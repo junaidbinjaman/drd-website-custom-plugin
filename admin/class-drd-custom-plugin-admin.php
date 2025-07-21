@@ -153,7 +153,7 @@ class Drd_Custom_Plugin_Admin {
 		add_menu_page(
 			__( 'Sales report by user role' ),
 			__( 'Sales report by user role' ),
-			'manage_options',
+			'manage_woocommerce',
 			'sales-report-by-user-role',
 			array( $this, 'salse_report_by_user_role' ),
 			'dashicons-chart-pie'

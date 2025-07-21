@@ -122,6 +122,6 @@ class Get_Salse_Report_By_User_Role {
 	 * @return bool
 	 */
 	public function get_salse_report__permission(): bool {
-		return current_user_can( 'administrator' );
+		return current_user_can('manage_woocommerce');
 	}
 }

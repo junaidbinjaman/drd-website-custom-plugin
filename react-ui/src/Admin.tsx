@@ -1,5 +1,5 @@
 "use client"
-import { Bar, BarChart, XAxis } from "recharts"
+import {Bar, BarChart, XAxis} from "recharts"
 import {
     Card,
     CardContent,
@@ -26,11 +26,10 @@ declare global {
 
 export const description = "A stacked bar chart with a legend"
 export const iframeHeight = "600px"
-export const containerClassName =
-    "[&>div]:w-full [&>div]:max-w-md flex items-center justify-center min-h-svh"
 
 function Admin() {
-    const [orders, setOrders] = useState<{total: string,  shipping_total: string, date_created: string}[]>([]);
+    const [orders, setOrders] = useState<{ total: string, shipping_total: string, date_created: string }[]>([]);
+
     useEffect(() => {
         const getProducts = async (): Promise<void> => {
             const res = await fetch(`${window.drdData.rootUrl}wc/v3/orders`, {
@@ -48,12 +47,11 @@ function Admin() {
     }, []);
 
     const chartData = [
-
     ]
 
     for (let i = 0; i < orders.length; i++) {
         let element = orders[i];
-        let object = { date: element.date_created, running: element.total, swimming: element.shipping_total }
+        let object = {date: element.date_created, running: element.total, swimming: element.shipping_total}
 
         chartData.push(object);
     }
@@ -103,7 +101,7 @@ function Admin() {
                                 radius={[4, 4, 0, 0]}
                             />
                             <ChartTooltip
-                                content={<ChartTooltipContent indicator="line" />}
+                                content={<ChartTooltipContent indicator="line"/>}
                                 cursor={false}
                                 defaultIndex={1}
                             />

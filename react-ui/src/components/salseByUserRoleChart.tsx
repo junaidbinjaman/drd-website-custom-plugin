@@ -25,17 +25,18 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {useSalseReportByUserRole} from "@/hooks/useSalseReportByUserRole.ts";
+import CalendarPopHover from "@/components/CalendarPopHover.tsx";
 
 const chartConfig = {
     visitors: {
         label: "Revenue",
     },
     net_salses: {
-        label: "Net Salse",
+        label: "Net Salse $",
         color: "var(--chart-4)",
     },
     shipping: {
-        label: "Shipping",
+        label: "Shipping $",
         color: "var(--chart-2)",
     },
 } satisfies ChartConfig
@@ -90,9 +91,10 @@ export default function SalseByUserRoleChart() {
                         Showing total net revenue for the selected date range.
                     </CardDescription>
                 </div>
+                <CalendarPopHover />
                 <Select value={timeRange} onValueChange={setTimeRange}>
                     <SelectTrigger
-                        className=" w-[160px] rounded-lg sm:ml-auto sm:flex"
+                        className="w-[160px] rounded-lg sm:ml-auto sm:flex"
                         aria-label="Select a value"
                     >
                         <SelectValue placeholder="Last 30 days" />

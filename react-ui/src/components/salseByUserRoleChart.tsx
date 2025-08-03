@@ -64,7 +64,7 @@ export default function SalseByUserRoleChart() {
         chartData.push({date, net_salses, shipping});
     }
 
-    console.log(chartData);
+
 
     const filteredData = chartData.filter((item) => {
         const date = new Date(item.date)

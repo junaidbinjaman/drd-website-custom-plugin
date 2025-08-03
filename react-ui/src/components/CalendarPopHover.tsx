@@ -3,17 +3,23 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import {useState} from "react";
+import {Calendar} from "@/components/ui/calendar"
+import {useEffect, useState} from "react";
+import {useSalseStartDate} from "@/hooks/useSalseStartDate.ts";
 
-function CalendarPopHover () {
+function CalendarPopHover() {
     const [selected, setSelected] = useState<Date>();
+    const {mutate} = useSalseStartDate();
 
-    function test() {
-        console.log(selected?.toLocaleDateString('en-CA'))
-    }
+    useEffect(() => {
 
-    test();
+        const payload = {
+            date: selected
+        }
+
+        mutate(payload);
+
+    }, [selected])
 
     return (
         <Popover>
@@ -30,4 +36,4 @@ function CalendarPopHover () {
     )
 }
 
-export  default CalendarPopHover;
+export default CalendarPopHover;

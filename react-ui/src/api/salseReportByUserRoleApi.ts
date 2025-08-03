@@ -22,6 +22,7 @@ type salseReportByUserRoleApiType = {
         }
     }[]
 }
+
 export const fetchSalseReportByUserRoleApi = async (): Promise<salseReportByUserRoleApiType> => {
     const response = await fetch(`${window.drdData.rootUrl}drdcustomplugin/v1/salse-report-by-user-role`, {
         method: 'GET',

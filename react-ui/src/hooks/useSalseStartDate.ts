@@ -5,7 +5,8 @@ export const useSalseStartDate = (): UseMutationResult<
     salseStartDateType,
     Error,
     {
-        date: Date | undefined
+        date: Date | undefined | string,
+        user_role: string
     }
 > => {
     const queryClient = useQueryClient();
@@ -14,7 +15,6 @@ export const useSalseStartDate = (): UseMutationResult<
         mutationFn: salseStartDateApiFetch,
         onSuccess: async (data, variables, context) => {
             await queryClient.invalidateQueries({queryKey: ['salseReportByUserRole']})
-            console.log({data: data, variables: variables, context: context})
         }
     })
 }

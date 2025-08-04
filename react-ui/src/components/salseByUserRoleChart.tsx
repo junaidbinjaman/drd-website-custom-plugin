@@ -26,27 +26,38 @@ import {
 } from "@/components/ui/select";
 import {useSalseReportByUserRole} from "@/hooks/useSalseReportByUserRole.ts";
 import CalendarPopHover from "@/components/CalendarPopHover.tsx";
+import {useSalseStartDate} from "@/hooks/useSalseStartDate.ts";
+import {useEffect} from "react";
 
 const chartConfig = {
     visitors: {
         label: "Revenue",
     },
     net_salses: {
-        label: "Net Salse $",
+        label: "Net Salse",
         color: "var(--chart-4)",
     },
     shipping: {
-        label: "Shipping $",
+        label: "Shipping",
         color: "var(--chart-2)",
     },
 } satisfies ChartConfig
 
 export default function SalseByUserRoleChart() {
     const [timeRange, setTimeRange] = React.useState("30d")
-    const {data, isPending, isError, error} = useSalseReportByUserRole();
+    const {mutate, isPending, isError, isSuccess, data} = useSalseStartDate();
+
+    useEffect(() => {
+        mutate({date: '2025-08-04', user_role: 'administrator'});
+    }, [])
+
 
     if (isPending) return <div>Loading...</div>;
     if (isError) return <div>Error: {error.message}</div>;
+
+    if (isSuccess) {
+        console.log(data.data.order)
+    }
 
     const chartData: {
         date: string // "2024-04-30",
@@ -54,8 +65,8 @@ export default function SalseByUserRoleChart() {
         shipping: number // 380
     }[] = [];
 
-    for (let i = 0; i < data?.data.length; i++) {
-        let element = data?.data[i];
+    for (let i = 0; i < data?.data.order.length; i++) {
+        let element = data?.data.order[i];
 
         let date = element?.date.date.split(" ")[0];
         let net_salses = Number(element?.total.order_total);
@@ -169,6 +180,7 @@ export default function SalseByUserRoleChart() {
                                             day: "numeric",
                                         })
                                     }}
+
                                     indicator="dot"
                                 />
                             }

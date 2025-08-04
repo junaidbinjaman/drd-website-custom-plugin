@@ -155,8 +155,19 @@ class Drd_Custom_Plugin_Admin {
 	}
 
 	public function salse_report_by_user_role(): void {
-
+		$date = new \DateTime();
 		echo '<div id="drd-admin-interface"></div>';
+
+		$startDate = new \DateTime();
+		$formattedStartDate = $startDate->format('Y-m-d');
+
+		$endDate = new \DateTime();
+		$endDate = $startDate->modify('- 30 days');
+		$formattedEndDate = $endDate->format('Y-m-d');
+
+
+		echo $formattedStartDate . '<br />';
+		echo $formattedEndDate;
 	}
 
 }

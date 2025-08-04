@@ -33,6 +33,8 @@
  */
 
 // If this file is called directly, abort.
+use includes\salse_report_by_user_role;
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -91,19 +93,12 @@ function run_drd_custom_plugin(): void {
 
 add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
 
-add_action( 'init', function () {
-	if ( ! is_admin() ) {
-		$start_date = new DateTime('2025-07-01');
+require_once plugin_dir_path( __FILE__ ) . 'includes/rest_controllers/Salse_Report_By_User_Role.php';
 
-		echo '<pre>';
-		var_dump($start_date);
-		print_r( count(wc_get_orders([
-			'date_created' => '2025-07-01...2025-07-15',
-			'limit'        => -1,
-		])) );
-		echo '</pre>';
-		wp_die();
-
-	}
+add_action( 'rest_api_init', function () {
+	$controller = new \includes\rest_controllers\Salse_Report_By_User_Role();
+	$controller->register_routes();
 } );
+
+
 

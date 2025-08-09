@@ -100,5 +100,3 @@ add_action( 'rest_api_init', function () {
 	$controller->register_routes();
 } );
 
-
-

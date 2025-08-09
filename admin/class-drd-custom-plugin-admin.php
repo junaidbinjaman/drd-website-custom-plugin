@@ -164,10 +164,6 @@ class Drd_Custom_Plugin_Admin {
 		$endDate = new \DateTime();
 		$endDate = $startDate->modify('- 30 days');
 		$formattedEndDate = $endDate->format('Y-m-d');
-
-
-		echo $formattedStartDate . '<br />';
-		echo $formattedEndDate;
 	}
 
 }

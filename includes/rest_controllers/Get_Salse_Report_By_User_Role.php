@@ -90,8 +90,9 @@ class Get_Salse_Report_By_User_Role {
 		$user_role      = sanitize_text_field( $request->get_param( 'userRole' ) );
 
 		$end_date      = new \DateTime( $reference_date );
+		$end_date      = $end_date->add(new \DateInterval( 'P1D' ));
 		$start_date    = new \DateTime( $reference_date );
-		$start_date    = $start_date->sub( new \DateInterval( 'P30D' ) );
+		$start_date    = $start_date->sub( new \DateInterval( 'P29D' ) );
 		$date_interval = new \DateInterval( 'P1D' );
 		$date_period   = new \DatePeriod( $start_date, $date_interval, $end_date );
 

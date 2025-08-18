@@ -70,7 +70,6 @@ export function ReportChart() {
         }
 
         const date = referenceDate.toLocaleDateString('en-CA');
-        console.log(date);
 
         mutate({userRole: selectedUserRole, referenceDate: date});
     }, [referenceDate, selectedUserRole, mutate]);

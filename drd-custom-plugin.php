@@ -98,3 +98,14 @@ function run_drd_custom_plugin(): void {
 add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/rest_controllers/Salse_Report_By_User_Role_example.php';
+
+//add_action(
+//	'init',
+//	function () {
+//		$order = wc_get_order('17118');
+//
+//		echo "<pre>";
+//		var_dump($order->get_user()->roles[0]);
+//		echo "</pre>";
+//	}
+//);

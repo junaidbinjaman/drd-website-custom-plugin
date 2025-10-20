@@ -2,14 +2,14 @@
 
 namespace includes\rest_controllers;
 
-class Retail_Sales_Report {
+class Wholesale_Sales_Report {
 	protected string $version;
 	protected string $namespace;
 	protected string $rest_base;
 
 	public function __construct() {
 		$this->version   = 'v1';
-		$this->rest_base = 'retail-sales-report';
+		$this->rest_base = 'wholesale-sales-report';
 		$this->namespace = ( new \Drd_Custom_Plugin() )->get_api_namespace() . '/' . $this->version;
 	}
 
@@ -41,7 +41,7 @@ class Retail_Sales_Report {
 
 		$orders = wc_get_orders( [
 			'date_completed' => "{$start_date}...{$end_date}",
-			'limit'          => -1,
+			'limit'          => - 1,
 		] );
 
 		if ( empty( $orders ) ) {
@@ -53,7 +53,7 @@ class Retail_Sales_Report {
 		}
 
 		$total_orders = 0;
-		$summary = [
+		$summary      = [
 			'subtotals'       => 0.0,
 			'fees'            => 0.0,
 			'shipping_totals' => 0.0,
@@ -68,11 +68,15 @@ class Retail_Sales_Report {
 				continue;
 			}
 
-			if ( ! in_array( 'customer', (array) $user->roles, true ) ) {
+			if (
+				! in_array( 'subscriber', (array) $user->roles, true ) &&
+				! in_array( 'wholesale_customer', (array) $user->roles, true )
+			) {
 				continue;
 			}
 
-			$total_orders++;
+
+			$total_orders ++;
 			$summary['subtotals']       += floatval( $order->get_subtotal() );
 			$summary['fees']            += floatval( $order->get_total_fees() );
 			$summary['shipping_totals'] += floatval( $order->get_shipping_total() );
@@ -90,7 +94,7 @@ class Retail_Sales_Report {
 
 		return new \WP_REST_Response( [
 			'status'       => 'success',
-			'message'      => 'Retail customer sales report generated successfully.',
+			'message'      => 'Wholesale customer sales report generated successfully.',
 			'start-date'   => $start_date,
 			'end-date'     => $end_date,
 			'total_orders' => $total_orders,

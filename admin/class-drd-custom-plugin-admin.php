@@ -13,10 +13,12 @@
 use includes\rest_controllers\Return_User_Role;
 use includes\rest_controllers\Get_Salse_Report_By_User_Role;
 use includes\rest_controllers\Retail_Sales_Report;
+use includes\rest_controllers\Wholesale_Sales_Report;
 
 require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Return_User_Role.php';
 require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Get_Salse_Report_By_User_Role.php';
 require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Retail_Sales_Report.php';
+require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Wholesale_Sales_Report.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -178,9 +180,11 @@ class Drd_Custom_Plugin_Admin {
 		$get_user_roles = new Return_User_Role();
 		$get_salse_report_by_user_role = new Get_Salse_Report_By_User_Role();
 		$retial_sales_report = new Retail_Sales_Report();
+		$wholesale_sales_report = new Wholesale_Sales_Report();
 
 		$get_user_roles->register_endpoints();
 		$get_salse_report_by_user_role->register_endpoints();
 		$retial_sales_report->register_endpoints();
+		$wholesale_sales_report->register_endpoints();
 	}
 }

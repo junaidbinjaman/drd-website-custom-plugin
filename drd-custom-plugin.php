@@ -41,7 +41,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const DRD_CUSTOM_PLUGIN_VERSION = '1.0.1';
+const DRD_CUSTOM_PLUGIN_VERSION = '1.2.0';
 
 /**
  * Define the rest api namespace for this plugin.
@@ -98,3 +98,14 @@ function run_drd_custom_plugin(): void {
 add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/rest_controllers/Salse_Report_By_User_Role_example.php';
+
+//add_action(
+//	'init',
+//	function () {
+//		$order = wc_get_order('17118');
+//
+//		echo "<pre>";
+//		var_dump($order->get_user()->roles[0]);
+//		echo "</pre>";
+//	}
+//);

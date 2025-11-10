@@ -5,4 +5,9 @@
       <list />
     </option>
   </component>
+  <component name="LaravelIdeaMainSettings">
+    <option name="appDirectory" value="src" />
+    <option name="frameworkFound" value="true" />
+    <option name="laravelBasePath" value="wp-content/plugins/elementor-pro/vendor_prefixed/laravel/serializable-closure" />
+  </component>
 </project>

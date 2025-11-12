@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -16,7 +15,7 @@
  * Plugin Name:       Drd Custom Plugin
  * Plugin URI:        https://allnextver.com
  * Description:       This is a custom plugin developed for drd website. The purpose behind this plugin development is to develop custom features and functionalities for drd website.
- * Version:           1.0.1
+ * Version:           1.2.0
  *
  * Author:            Junaid Bin Jaman
  * Author URI:        https://junaidbinjaman.com/

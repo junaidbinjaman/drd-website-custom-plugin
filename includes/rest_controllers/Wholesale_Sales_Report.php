@@ -75,7 +75,6 @@ class Wholesale_Sales_Report {
 				continue;
 			}
 
-
 			$total_orders ++;
 			$summary['subtotals']       += floatval( $order->get_subtotal() );
 			$summary['fees']            += floatval( $order->get_total_fees() );

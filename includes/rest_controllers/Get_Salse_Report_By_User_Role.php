@@ -6,7 +6,6 @@
 
 namespace includes\rest_controllers;
 
-use SimplePie\Parse\Date;
 use WP_REST_Server;
 use WP_REST_Response;
 use WP_REST_Request;

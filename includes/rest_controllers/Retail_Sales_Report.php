@@ -40,8 +40,8 @@ class Retail_Sales_Report {
 		$end_date   = date( 'Y-m-d', strtotime( $request->get_param( 'end_date' ) ) );
 
 		$orders = wc_get_orders( [
-			'date_completed' => "{$start_date}...{$end_date}",
-			'limit'          => -1,
+			'date_paid' => $start_date . "..." . $end_date,
+			'limit'     => - 1,
 		] );
 
 		if ( empty( $orders ) ) {
@@ -53,7 +53,7 @@ class Retail_Sales_Report {
 		}
 
 		$total_orders = 0;
-		$summary = [
+		$summary      = [
 			'subtotals'       => 0.0,
 			'fees'            => 0.0,
 			'shipping_totals' => 0.0,
@@ -64,20 +64,17 @@ class Retail_Sales_Report {
 		foreach ( $orders as $order ) {
 			$user = $order->get_user();
 
-			if ( ! $user instanceof \WP_User || empty( $user->roles ) ) {
-				continue;
+			if (
+				empty( $user->roles ) ||
+				in_array( 'customer', $user->roles, true )
+			) {
+				$total_orders ++;
+				$summary['subtotals']       += floatval( $order->get_subtotal() );
+				$summary['fees']            += floatval( $order->get_total_fees() );
+				$summary['shipping_totals'] += floatval( $order->get_shipping_total() );
+				$summary['discount_total']  += floatval( $order->get_total_discount() );
+				$summary['order_totals']    += floatval( $order->get_total() );
 			}
-
-			if ( ! in_array( 'customer', (array) $user->roles, true ) ) {
-				continue;
-			}
-
-			$total_orders++;
-			$summary['subtotals']       += floatval( $order->get_subtotal() );
-			$summary['fees']            += floatval( $order->get_total_fees() );
-			$summary['shipping_totals'] += floatval( $order->get_shipping_total() );
-			$summary['discount_total']  += floatval( $order->get_total_discount() );
-			$summary['order_totals']    += floatval( $order->get_total() );
 		}
 
 		// Format values for output

@@ -40,7 +40,7 @@ class Wholesale_Sales_Report {
 		$end_date   = date( 'Y-m-d', strtotime( $request->get_param( 'end_date' ) ) );
 
 		$orders = wc_get_orders( [
-			'date_completed' => "{$start_date}...{$end_date}",
+			'date_paid' => "{$start_date}...{$end_date}",
 			'limit'          => - 1,
 		] );
 
@@ -64,24 +64,17 @@ class Wholesale_Sales_Report {
 		foreach ( $orders as $order ) {
 			$user = $order->get_user();
 
-			if ( ! $user instanceof \WP_User || empty( $user->roles ) ) {
-				continue;
-			}
-
 			if (
-				! in_array( 'subscriber', (array) $user->roles, true ) &&
-				! in_array( 'wholesale_customer', (array) $user->roles, true )
+				in_array( 'subscriber', (array) $user->roles, true ) ||
+				in_array( 'wholesale_customer', (array) $user->roles, true )
 			) {
-				continue;
+				$total_orders += 1;
+				$summary['subtotals']       += floatval( $order->get_subtotal() );
+				$summary['fees']            += floatval( $order->get_total_fees() );
+				$summary['shipping_totals'] += floatval( $order->get_shipping_total() );
+				$summary['discount_total']  += floatval( $order->get_total_discount() );
+				$summary['order_totals']    += floatval( $order->get_total() );
 			}
-
-
-			$total_orders ++;
-			$summary['subtotals']       += floatval( $order->get_subtotal() );
-			$summary['fees']            += floatval( $order->get_total_fees() );
-			$summary['shipping_totals'] += floatval( $order->get_shipping_total() );
-			$summary['discount_total']  += floatval( $order->get_total_discount() );
-			$summary['order_totals']    += floatval( $order->get_total() );
 		}
 
 		// Format values for output
@@ -99,6 +92,7 @@ class Wholesale_Sales_Report {
 			'end-date'     => $end_date,
 			'total_orders' => $total_orders,
 			'data'         => $summary,
+			'orders'       => count( $orders )
 		], 200 );
 	}
 

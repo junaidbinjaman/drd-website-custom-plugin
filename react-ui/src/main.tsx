@@ -5,17 +5,31 @@ import './index.css';
 import Admin from './Admin.tsx';
 import {QueryClientContext} from '@/context/QueryClientContext.tsx';
 import SalesReportDateProvider from './context/SalesReportDataContext/SalesReportDateProvider.tsx';
+import SalesRepresentative from './admin-pages/salesRepresentative.tsx';
 
 const adminRoot = document.getElementById('drd-admin-interface');
+const salesRepresentative = document.getElementById(
+    'drd-sales-representative-interface'
+);
 
 if (adminRoot) {
     createRoot(adminRoot).render(
         <StrictMode>
             <QueryClientContext>
-                    <SalesReportDateProvider>
-                        <Admin />
-                    </SalesReportDateProvider>
+                <SalesReportDateProvider>
+                    <Admin />
+                </SalesReportDateProvider>
             </QueryClientContext>
+        </StrictMode>
+    );
+}
+
+console.log('hello');
+
+if (salesRepresentative) {
+    createRoot(salesRepresentative).render(
+        <StrictMode>
+            <SalesRepresentative />
         </StrictMode>
     );
 }

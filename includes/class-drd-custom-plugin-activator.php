@@ -29,8 +29,9 @@ class Drd_Custom_Plugin_Activator {
 	 *
 	 * @since    1.0.0
 	 */
-	public static function activate() {
-
+	public static function activate(): void {
+		if ( is_null(get_role( 'sales_representative' )) ) {
+			add_role( 'sales_representative', 'Sales Representative', get_role( 'customer' )->capabilities );
+		}
 	}
-
 }

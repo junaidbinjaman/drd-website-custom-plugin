@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -13,8 +12,8 @@
 use includes\rest_controllers\Retail_Sales_Report;
 use includes\rest_controllers\Wholesale_Sales_Report;
 
-require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Retail_Sales_Report.php';
-require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Wholesale_Sales_Report.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/rest_controllers/Retail_Sales_Report.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/rest_controllers/Wholesale_Sales_Report.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -125,10 +124,19 @@ class Drd_Custom_Plugin_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/drd-custom-plugin-admin.js', array( 'jquery' ), $this->version, false );
 
+		if ( ! $this->screen() ) {
+			return;
+		}
+
+		$allowed_screen = array(
+			'toplevel_page_sales-representative',
+			'toplevel_page_sales-report-by-user-role'
+		);
+
 		/**
 		 * Enqueue the react ui scripts
 		 */
-		if ( $this->screen() && $this->screen()->id === 'toplevel_page_sales-report-by-user-role' ) {
+		if ( in_array( $this->screen()->id, $allowed_screen, true ) ) {
 			wp_enqueue_script(
 				'drd-admin-react-ui-screen',
 				plugin_dir_url( __DIR__ ) . 'includes/react/index.js',
@@ -158,25 +166,38 @@ class Drd_Custom_Plugin_Admin {
 			array( $this, 'salse_report_by_user_role' ),
 			'dashicons-chart-pie'
 		);
+
+		add_menu_page(
+			__( 'Sales Representative' ),
+			__( 'Sales Representative' ),
+			'manage_options',
+			'sales-representative',
+			array( $this, 'sales_representative_screen' ),
+			plugins_url( 'drd-custom-plugin/assets/sales-representative-icon.png' ),
+		);
 	}
 
 	public function salse_report_by_user_role(): void {
 		$date = new \DateTime();
 		echo '<div id="drd-admin-interface"></div>';
 
-		$startDate = new \DateTime();
-		$formattedStartDate = $startDate->format('Y-m-d');
+		$startDate          = new \DateTime();
+		$formattedStartDate = $startDate->format( 'Y-m-d' );
 
-		$endDate = new \DateTime();
-		$endDate = $startDate->modify('- 30 days');
-		$formattedEndDate = $endDate->format('Y-m-d');
+		$endDate          = new \DateTime();
+		$endDate          = $startDate->modify( '- 30 days' );
+		$formattedEndDate = $endDate->format( 'Y-m-d' );
 	}
 
 	public function init_custom_rest_api(): void {
-		$retial_sales_report = new Retail_Sales_Report();
+		$retial_sales_report    = new Retail_Sales_Report();
 		$wholesale_sales_report = new Wholesale_Sales_Report();
 
 		$retial_sales_report->register_endpoints();
 		$wholesale_sales_report->register_endpoints();
+	}
+
+	public function sales_representative_screen(): void {
+		echo '<div id="drd-sales-representative-interface"></div>';
 	}
 }

@@ -95,3 +95,4 @@ function run_drd_custom_plugin(): void {
 }
 
 add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
+

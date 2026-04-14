@@ -96,6 +96,7 @@ class Drd_Custom_Plugin {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_cpt_hooks();
 
 	}
 
@@ -153,6 +154,11 @@ class Drd_Custom_Plugin {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-drd-custom-plugin-public.php';
 
+		/**
+		 * The class responsible for registering custom post types.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-drd-custom-plugin-cpt.php';
+
 		$this->loader = new Drd_Custom_Plugin_Loader();
 
 	}
@@ -205,6 +211,23 @@ class Drd_Custom_Plugin {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
+	}
+
+	/**
+	 * Register all hooks related to custom post types.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_cpt_hooks(): void {
+		$plugin_cpt = new Drd_Custom_Plugin_Cpt();
+
+		$this->loader->add_action( 'init', $plugin_cpt, 'register_post_types' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_cpt, 'add_meta_boxes' );
+		$this->loader->add_action( 'save_post_drd_res_acct', $plugin_cpt, 'save_meta_box' );
+		$this->loader->add_filter( 'manage_drd_res_acct_posts_columns', $plugin_cpt, 'set_columns' );
+		$this->loader->add_action( 'manage_drd_res_acct_posts_custom_column', $plugin_cpt, 'render_columns', 10, 2 );
+		$this->loader->add_action( 'save_post', $plugin_cpt, 'accept_research_account_req' );
 	}
 
 	/**

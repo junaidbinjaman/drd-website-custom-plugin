@@ -184,9 +184,41 @@ class Drd_Custom_Plugin_Cpt {
 				return;
 			}
 
+			$first_name = get_post_meta( $post_id, '_drd_ra_first_name', true );
+			$last_name  = get_post_meta( $post_id, '_drd_ra_last_name', true );
+			$email      = get_post_meta( $post_id, '_drd_ra_email', true );
+
+			error_log($email);
+
 			// Register a new user if no user exists with the provided email
+			if (email_exists($email)) {
+				set_transient('drd_ra_user_email_taken', 'Email is already taken. Skipping account creation.', 10);
+				return;
+			}
+
+			$auto_generated_password = wp_generate_password();
+
+			$user = wp_insert_user( array(
+				'user_login' => $email,
+				'user_pass'  => $auto_generated_password,
+				'user_email' => $email,
+				'first_name' => $first_name,
+				'last_name'  => $last_name,
+				'role'       => 'subscriber',
+			) );
+
 			// Show admin notice on success/failure
-			// trash the post after processing
+			if ( is_wp_error( $user ) ) {
+				set_transient('drd_ra_user_registation_failed', 'Failed to create user: ' . $user->get_error_message(), 10);
+				return;
+			}
+
+			set_transient('drd_ra_user_registation_success', 'User account created successfully for ' . $first_name, 10);
+
+			wp_trash_post( $post_id );
+			wp_safe_redirect( admin_url( '/edit.php?post_type=drd_res_acct' ) );
+			exit;
+
 			// Send email notification to the requester about the account status
 		}
 	}

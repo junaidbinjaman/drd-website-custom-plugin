@@ -96,3 +96,25 @@ function run_drd_custom_plugin(): void {
 
 add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
 
+add_action( 'admin_notices', function () {
+	$drd_transient_keys = array(
+		'drd_ra_user_registation_failed',
+		'drd_ra_user_email_taken',
+		'drd_ra_user_registation_success'
+	);
+
+	foreach ( $drd_transient_keys as $transient_key ) {
+		if ( get_transient( $transient_key ) ) {
+			wp_admin_notice( get_transient($transient_key), array( 'type' => 'info', 'dismissible' => true ) );
+			delete_transient( $transient_key );
+		}
+	}
+
+	if ( ! get_transient( 'drd_ra_user_registation_failed' ) ) {
+		return;
+	}
+
+	wp_admin_notice( 'Email is already taken. Skipping account creation.', array( 'type' => 'error', 'dismissible' => true ) );
+
+	delete_transient( 'drd_ra_user_registation_failed' );
+} );

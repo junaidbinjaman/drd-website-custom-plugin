@@ -184,7 +184,9 @@ class Drd_Custom_Plugin_Admin {
 		$drd_transient_keys = array(
 			'drd_ra_user_registation_failed',
 			'drd_ra_user_email_taken',
-			'drd_ra_user_registation_success'
+			'drd_ra_user_registation_success',
+			'drd_ra_rejection_email_failed',
+			'drd_ra_user_rejected'
 		);
 
 		foreach ( $drd_transient_keys as $transient_key ) {

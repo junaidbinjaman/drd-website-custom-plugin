@@ -68,6 +68,7 @@ class Drd_Custom_Plugin_Cpt {
 	public function render_meta_box( WP_Post $post ): void {
 		wp_nonce_field( 'drd_res_acct_save', 'drd_res_acct_nonce' );
 		echo '<input type="hidden" name="drd_approve_request" id="drd_approve_request" value="0" />';
+		echo '<input type="hidden" name="drd_reject_request" id="drd_reject_request" value="0" />';
 
 		$fields = array(
 			'_drd_ra_full_name'        => __( 'Full Name', 'drd-custom-plugin' ),
@@ -106,6 +107,10 @@ class Drd_Custom_Plugin_Cpt {
 				<td>
 					<button type="button" class="button button-primary button-large" onclick="document.getElementById(\'drd_approve_request\').value=\'1\';document.getElementById(\'post\').submit();">
 						Accept Request
+					</button>
+					&nbsp;
+					<button type="button" class="button button-large" style="border-color:red;color:red;" onclick="document.getElementById(\'drd_reject_request\').value=\'1\';document.getElementById(\'post\').submit();">
+						Reject Request
 					</button>
 				</td>
 			</tr>
@@ -241,7 +246,77 @@ class Drd_Custom_Plugin_Cpt {
 			wp_trash_post( $post_id );
 			wp_safe_redirect( admin_url( '/edit.php?post_type=drd_res_acct' ) );
 			exit;
+		} elseif ( isset( $_POST['drd_reject_request'] ) && '1' === $_POST['drd_reject_request'] ) {
+			$already_ran = true;
+			$full_name   = get_post_meta( $post_id, '_drd_ra_full_name', true );
+			$email       = get_post_meta( $post_id, '_drd_ra_email', true );
+
+			$email_sent = $this->send_rejection_email( $email, $full_name );
+			if ( ! $email_sent ) {
+				set_transient( 'drd_ra_rejection_email_failed', 'Rejection email could not be sent to ' . $email, 10 );
+			}
+
+			set_transient( 'drd_ra_user_rejected', 'Research account request rejected for ' . $full_name, 10 );
+
+			wp_trash_post( $post_id );
+			wp_safe_redirect( admin_url( '/edit.php?post_type=drd_res_acct' ) );
+			exit;
 		}
+	}
+
+	private function send_rejection_email( string $email, string $full_name ): bool {
+		$logo_url        = 'https://rejuvatidepeptides.com/wp-content/uploads/2025/07/mMTaxqSmDJFklqx2-e1752456965774.png';
+		$display_name    = esc_html( $full_name );
+
+		$body = '<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:30px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#ffffff;padding:30px 40px;text-align:center;border-bottom:2px solid #f0f0f0;">
+              <img src="' . $logo_url . '" alt="Rejuvatide Peptides" style="max-width:200px;height:auto;display:block;margin:0 auto 16px;" />
+              <h1 style="margin:0;font-size:24px;color:#2c2c2c;">Research Account Application Update</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px;color:#444444;font-size:15px;line-height:1.7;">
+              <p>Hi ' . $display_name . ',</p>
+              <p>Thank you for taking the time to apply for a research account with Rejuvatide Peptides. After careful review, we regret to inform you that your application has not been approved at this time.</p>
+              <p>We appreciate your interest in our research community. If you have any questions or believe this decision was made in error, please do not hesitate to contact us.</p>
+              <p>We wish you all the best in your research endeavors.</p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f8f8f8;padding:24px 40px;text-align:center;border-top:2px solid #f0f0f0;color:#888888;font-size:13px;">
+              <p style="margin:0 0 6px;">Thank you for your understanding.</p>
+              <p style="margin:0;font-weight:bold;color:#555555;">Rejuvatide Peptides</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>';
+
+		$subject = 'Update on Your Rejuvatide Peptides Research Account Application';
+		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
+
+		return wp_mail( $email, $subject, $body, $headers );
 	}
 
 	private function send_acceptance_email( string $email, string $first_name, string $last_name, string $temp_password ): bool {
@@ -274,7 +349,7 @@ class Drd_Custom_Plugin_Cpt {
           <!-- Body -->
           <tr>
             <td style="padding:36px 40px;color:#444444;font-size:15px;line-height:1.7;">
-              <p>Dear ' . $full_name . ',</p>
+              <p>Hi ' . $full_name . ',</p>
               <p>Congratulations! We are thrilled to let you know that your research account application has been <strong>approved</strong>. You are now an official member of the Rejuvatide Peptides research community.</p>
               <p>Your account has been created and you can log in right away using the credentials below:</p>
 

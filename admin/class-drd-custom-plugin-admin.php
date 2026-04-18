@@ -13,8 +13,8 @@
 use includes\rest_controllers\Retail_Sales_Report;
 use includes\rest_controllers\Wholesale_Sales_Report;
 
-require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Retail_Sales_Report.php';
-require_once plugin_dir_path( __FILE__, ) . '../includes/rest_controllers/Wholesale_Sales_Report.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/rest_controllers/Retail_Sales_Report.php';
+require_once plugin_dir_path( __FILE__ ) . '../includes/rest_controllers/Wholesale_Sales_Report.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -178,5 +178,20 @@ class Drd_Custom_Plugin_Admin {
 
 		$retial_sales_report->register_endpoints();
 		$wholesale_sales_report->register_endpoints();
+	}
+
+	public function display_admin_notices(): void {
+		$drd_transient_keys = array(
+			'drd_ra_user_registation_failed',
+			'drd_ra_user_email_taken',
+			'drd_ra_user_registation_success'
+		);
+
+		foreach ( $drd_transient_keys as $transient_key ) {
+			if ( get_transient( $transient_key ) ) {
+				wp_admin_notice( get_transient($transient_key), array( 'type' => 'info', 'dismissible' => true ) );
+				delete_transient( $transient_key );
+			}
+		}
 	}
 }

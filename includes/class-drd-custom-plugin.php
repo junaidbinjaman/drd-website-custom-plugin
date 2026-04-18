@@ -195,6 +195,7 @@ class Drd_Custom_Plugin {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu_initializer' );
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'init_custom_rest_api' );
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'display_admin_notices' );
 	}
 
 	/**
@@ -227,7 +228,7 @@ class Drd_Custom_Plugin {
 		$this->loader->add_action( 'save_post_drd_res_acct', $plugin_cpt, 'save_meta_box' );
 		$this->loader->add_filter( 'manage_drd_res_acct_posts_columns', $plugin_cpt, 'set_columns' );
 		$this->loader->add_action( 'manage_drd_res_acct_posts_custom_column', $plugin_cpt, 'render_columns', 10, 2 );
-		$this->loader->add_action( 'save_post', $plugin_cpt, 'accept_research_account_req' );
+		$this->loader->add_action( 'save_post_drd_res_acct', $plugin_cpt, 'accept_research_account_req' );
 	}
 
 	/**

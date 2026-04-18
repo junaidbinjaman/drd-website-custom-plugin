@@ -15,7 +15,7 @@
  * Plugin Name:       Drd Custom Plugin
  * Plugin URI:        https://allnextver.com
  * Description:       This is a custom plugin developed for drd website. The purpose behind this plugin development is to develop custom features and functionalities for drd website.
- * Version:           1.1.1
+ * Version:           1.3.0
  *
  * Author:            Junaid Bin Jaman
  * Author URI:        https://junaidbinjaman.com/
@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-const DRD_CUSTOM_PLUGIN_VERSION = '1.2.0';
+const DRD_CUSTOM_PLUGIN_VERSION = '1.3.0';
 
 /**
  * Define the rest api namespace for this plugin.
@@ -95,26 +95,3 @@ function run_drd_custom_plugin(): void {
 }
 
 add_action( 'plugins_loaded', 'run_drd_custom_plugin' );
-
-add_action( 'admin_notices', function () {
-	$drd_transient_keys = array(
-		'drd_ra_user_registation_failed',
-		'drd_ra_user_email_taken',
-		'drd_ra_user_registation_success'
-	);
-
-	foreach ( $drd_transient_keys as $transient_key ) {
-		if ( get_transient( $transient_key ) ) {
-			wp_admin_notice( get_transient($transient_key), array( 'type' => 'info', 'dismissible' => true ) );
-			delete_transient( $transient_key );
-		}
-	}
-
-	if ( ! get_transient( 'drd_ra_user_registation_failed' ) ) {
-		return;
-	}
-
-	wp_admin_notice( 'Email is already taken. Skipping account creation.', array( 'type' => 'error', 'dismissible' => true ) );
-
-	delete_transient( 'drd_ra_user_registation_failed' );
-} );

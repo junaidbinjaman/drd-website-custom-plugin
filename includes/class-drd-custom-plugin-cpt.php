@@ -70,25 +70,35 @@ class Drd_Custom_Plugin_Cpt {
 		echo '<input type="hidden" name="drd_approve_request" id="drd_approve_request" value="0" />';
 
 		$fields = array(
-			'_drd_ra_first_name' => __( 'First Name', 'drd-custom-plugin' ),
-			'_drd_ra_last_name'  => __( 'Last Name', 'drd-custom-plugin' ),
-			'_drd_ra_email'      => __( 'Email Address', 'drd-custom-plugin' ),
-			'_drd_ra_phone'      => __( 'Phone #', 'drd-custom-plugin' ),
-			'_drd_ra_facility'   => __( 'Research Facility', 'drd-custom-plugin' ),
+			'_drd_ra_full_name'        => __( 'Full Name', 'drd-custom-plugin' ),
+			'_drd_ra_business_address' => __( 'Business Address', 'drd-custom-plugin' ),
+			'_drd_ra_email'            => __( 'Email Address', 'drd-custom-plugin' ),
+			'_drd_ra_phone'            => __( 'Phone #', 'drd-custom-plugin' ),
+			'_drd_ra_category'         => __( 'Research Category', 'drd-custom-plugin' ),
+			'_drd_ra_plan'             => __( 'Research Plan', 'drd-custom-plugin' ),
 		);
 
 		echo '<table class="form-table"><tbody>';
 
 		foreach ( $fields as $key => $label ) {
 			$value = get_post_meta( $post->ID, $key, true );
-			$type  = ( '_drd_ra_email' === $key ) ? 'email' : 'text';
-			printf(
-				'<tr><th><label for="%1$s">%2$s</label></th><td><input type="%3$s" id="%1$s" name="%1$s" value="%4$s" class="regular-text" /></td></tr>',
-				esc_attr( $key ),
-				esc_html( $label ),
-				esc_attr( $type ),
-				esc_attr( $value )
-			);
+			if ( $key === '_drd_ra_plan' ) {
+				printf(
+					'<tr><th><label for="%1$s">%2$s</label></th><td><textarea id="%1$s" name="%1$s" class="large-text" rows="5">%3$s</textarea></td></tr>',
+					esc_attr( $key ),
+					esc_html( $label ),
+					esc_textarea( $value ),
+				);
+			} else {
+				$type = ( '_drd_ra_email' === $key ) ? 'email' : 'text';
+				printf(
+					'<tr><th><label for="%1$s">%2$s</label></th><td><input type="%3$s" id="%1$s" name="%1$s" value="%4$s" class="regular-text" /></td></tr>',
+					esc_attr( $key ),
+					esc_html( $label ),
+					esc_attr( $type ),
+					esc_attr( $value )
+				);
+			}
 		}
 
 		echo '<tr>
@@ -126,11 +136,12 @@ class Drd_Custom_Plugin_Cpt {
 		}
 
 		$fields = array(
-			'_drd_ra_first_name' => 'sanitize_text_field',
-			'_drd_ra_last_name'  => 'sanitize_text_field',
-			'_drd_ra_email'      => 'sanitize_email',
-			'_drd_ra_phone'      => 'sanitize_text_field',
-			'_drd_ra_facility'   => 'sanitize_text_field',
+			'_drd_ra_full_name'        => 'sanitize_text_field',
+			'_drd_ra_business_address' => 'sanitize_text_field',
+			'_drd_ra_email'            => 'sanitize_email',
+			'_drd_ra_phone'            => 'sanitize_text_field',
+			'_drd_ra_category'         => 'sanitize_text_field',
+			'_drd_ra_plan'             => 'sanitize_textarea_field',
 		);
 
 		foreach ( $fields as $key => $sanitize_fn ) {
@@ -150,10 +161,10 @@ class Drd_Custom_Plugin_Cpt {
 	public function set_columns( array $columns ): array {
 		unset( $columns['date'] );
 
-		$columns['_drd_ra_first_name'] = __( 'First Name', 'drd-custom-plugin' );
-		$columns['_drd_ra_last_name']  = __( 'Last Name', 'drd-custom-plugin' );
-		$columns['_drd_ra_email']      = __( 'Email', 'drd-custom-plugin' );
-		$columns['_drd_ra_facility']   = __( 'Research Facility', 'drd-custom-plugin' );
+		$columns['_drd_ra_full_name'] = __( 'First Name', 'drd-custom-plugin' );
+		$columns['_drd_ra_email']  = __( 'Last Name', 'drd-custom-plugin' );
+		$columns['_drd_ra_phone']      = __( 'Email', 'drd-custom-plugin' );
+		$columns['_drd_ra_category']   = __( 'Research Facility', 'drd-custom-plugin' );
 
 		return $columns;
 	}
@@ -166,10 +177,10 @@ class Drd_Custom_Plugin_Cpt {
 	 */
 	public function render_columns( string $column, int $post_id ): void {
 		$meta_keys = array(
-			'_drd_ra_first_name',
-			'_drd_ra_last_name',
+			'_drd_ra_full_name',
 			'_drd_ra_email',
-			'_drd_ra_facility',
+			'_drd_ra_phone',
+			'_drd_ra_category',
 		);
 
 		if ( in_array( $column, $meta_keys, true ) ) {
@@ -177,26 +188,29 @@ class Drd_Custom_Plugin_Cpt {
 		}
 	}
 
-	public function accept_research_account_req(): void {
+	public function accept_research_account_req( int $post_id ): void {
+		static $already_ran = false;
+
+		if ( $already_ran ) {
+			return;
+		}
+
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+
 		if ( isset( $_POST['drd_approve_request'] ) && '1' === $_POST['drd_approve_request'] ) {
-			$post_id = get_the_ID();
-			if ( ! $post_id ) {
-				return;
-			}
-
-			$first_name = get_post_meta( $post_id, '_drd_ra_first_name', true );
-			$last_name  = get_post_meta( $post_id, '_drd_ra_last_name', true );
-			$email      = get_post_meta( $post_id, '_drd_ra_email', true );
-
-			error_log($email);
-
-			// Register a new user if no user exists with the provided email
-			if (email_exists($email)) {
-				set_transient('drd_ra_user_email_taken', 'Email is already taken. Skipping account creation.', 10);
-				return;
-			}
-
+			$already_ran             = true;
+			$first_name              = get_post_meta( $post_id, '_drd_ra_first_name', true );
+			$last_name               = get_post_meta( $post_id, '_drd_ra_last_name', true );
+			$email                   = get_post_meta( $post_id, '_drd_ra_email', true );
 			$auto_generated_password = wp_generate_password();
+
+			if ( email_exists( $email ) ) {
+				set_transient( 'drd_ra_user_email_taken', 'Email is already taken. Skipping account creation.', 10 );
+
+				return;
+			}
 
 			$user = wp_insert_user( array(
 				'user_login' => $email,
@@ -209,11 +223,14 @@ class Drd_Custom_Plugin_Cpt {
 
 			// Show admin notice on success/failure
 			if ( is_wp_error( $user ) ) {
-				set_transient('drd_ra_user_registation_failed', 'Failed to create user: ' . $user->get_error_message(), 10);
+				set_transient( 'drd_ra_user_registation_failed', 'Failed to create user: ' . $user->get_error_message(),
+					10 );
+
 				return;
 			}
 
-			set_transient('drd_ra_user_registation_success', 'User account created successfully for ' . $first_name, 10);
+			set_transient( 'drd_ra_user_registation_success', 'User account created successfully for ' . $first_name,
+				10 );
 
 			wp_trash_post( $post_id );
 			wp_safe_redirect( admin_url( '/edit.php?post_type=drd_res_acct' ) );

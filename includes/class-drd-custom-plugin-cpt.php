@@ -292,9 +292,13 @@ class Drd_Custom_Plugin_Cpt {
           <tr>
             <td style="padding:36px 40px;color:#444444;font-size:15px;line-height:1.7;">
               <p>Hi ' . $display_name . ',</p>
-              <p>Thank you for taking the time to apply for a research account with Rejuvatide Peptides. After careful review, we regret to inform you that your application has not been approved at this time.</p>
-              <p>We appreciate your interest in our research community. If you have any questions or believe this decision was made in error, please do not hesitate to contact us.</p>
-              <p>We wish you all the best in your research endeavors.</p>
+              <p>Thank you for applying for an account with Rejuvatide Peptides. After careful review, we cannot approve your account for one of the following reasons:</p>
+              <ul>
+                <li>— You have provided a personal email address rather than a legitimate business address</li>
+				<li>— It appears that your account is not intended to be used for research, which violates our terms and conditions as well as Federal law</li>
+				<li>— You have indicated that you will use in humans or animals</li>
+			  </ul>
+              <p>We apologize for the inconvenience.</p>
             </td>
           </tr>
 
